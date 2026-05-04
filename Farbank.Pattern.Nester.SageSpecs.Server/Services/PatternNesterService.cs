@@ -1,13 +1,23 @@
-public class PatternNesterService
-{
-    private readonly MyDbContext _dbContext;
-    public PatternNesterService(MyDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+using System;
+using Farbank.Pattern.Nester.SageSpecs.Models;
+using Microsoft.EntityFrameworkCore;
 
-    public async Task DoSomethingAsync()
+namespace Farbank.Pattern.Nester.SageSpecs.Server.Services
+{
+
+    public class PatternNesterService
     {
-        // Business logic using _dbContext
+        private readonly SpecsDbContext _dbContext;
+        public PatternNesterService(SpecsDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task<List<string>> GetExclusions()
+        {
+            var exclusions = await _dbContext.Exclusions.Select(e => e.Sku).ToListAsync();
+
+            return exclusions;
+        }
     }
 }

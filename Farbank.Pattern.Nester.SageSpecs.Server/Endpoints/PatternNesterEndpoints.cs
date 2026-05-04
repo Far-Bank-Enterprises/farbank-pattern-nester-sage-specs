@@ -14,5 +14,12 @@ public static class PatternNesterEndpoints
             return Results.Ok(new { message = "Pattern Nester ping received" });
         })
         .WithName("PatternNesterPing");
+
+        routes.MapGet("/exclusions", async ([FromServices] Services.PatternNesterService service) =>
+        {
+            var exclusions = await service.GetExclusions();
+            return Results.Ok(exclusions);
+        })
+        .WithName("GetExclusions");
     }
 }
