@@ -1,0 +1,131 @@
+parameters:
+  - name: dockerImageFrontend
+    type: string
+    default: 'pattern-nester-frontend'
+  - name: dockerImageBackend
+    type: string
+    default: 'pattern-nester-backend'
+
+trigger:
+- main
+
+variables:
+  ACR_NAME: repairssagespecstest
+  RESOURCE_GROUP: Repairs-SageSpecs-Test
+  WEBAPP_COMPOSE_NAME: farbank-repairs-sagespecs-test
+  IMAGE_TAG: $(Build.BuildId)
+  CONTAINERAPPS_ENV: farbank-repairs-sagespecs-env
+  LOCATION: westus2
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: 'Build and Push Images'
+  jobs:
+  - job: BuildAndPush
+    steps:
+    - task: DockerInstaller@0
+      displayName: 'Install Docker'
+
+    - script: |
+        docker login $(ACR_NAME).azurecr.io -u $(ACR_USERNAME) -p $(ACR_PASSWORD)
+      env:
+        ACR_USERNAME: $(ACR_USERNAME)
+        ACR_PASSWORD: $(ACR_PASSWORD)
+      displayName: 'Login to ACR'
+
+    - script: |
+        docker build -t $(ACR_NAME).azurecr.io/pattern-nester-frontend:$(IMAGE_TAG) ./frontend
+        docker build -t $(ACR_NAME).azurecr.io/pattern-nester-backend:$(IMAGE_TAG) ./FarBank.Pattern.Nester.SageSpecs.Server
+      displayName: 'Build Docker Images'
+
+    - script: |
+        docker push $(ACR_NAME).azurecr.io/pattern-nester-frontend:$(IMAGE_TAG)
+        docker push $(ACR_NAME).azurecr.io/pattern-nester-backend:$(IMAGE_TAG)
+      displayName: 'Push Images to ACR'
+
+    - publish: $(System.DefaultWorkingDirectory)/docker-compose.yaml
+      artifact: compose
+
+- stage: Deploy
+  displayName: 'Deploy to Azure Container Apps'
+  dependsOn: Build
+  jobs:
+  - deployment: DeployCompose
+    environment: 'Test'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: compose
+          - task: AzureCLI@2
+            displayName: 'Deploy to Azure Container Apps'
+            inputs:
+              azureSubscription: 'Pay-As-You-Go (bef71c59-2173-4ed4-b111-782e8ad1ecb2)'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                WS_KEY=$(az monitor log-analytics workspace get-shared-keys \
+                  --resource-group $(RESOURCE_GROUP) \
+                  --workspace-name farbank-pattern-nester-sagespecs \
+                  --query primarySharedKey -o tsv)
+
+                az containerapp env create \
+                  --name $(CONTAINERAPPS_ENV) \
+                  --resource-group $(RESOURCE_GROUP) \
+                  --logs-workspace-id d356cea4-9042-4281-a9ea-37113bfa298e \
+                  --logs-workspace-key $WS_KEY \
+                  --location $(LOCATION)
+
+                az containerapp create \
+                  --name pattern-nester-backend \
+                  --resource-group $(RESOURCE_GROUP) \
+                  --environment $(CONTAINERAPPS_ENV) \
+                  --image $(ACR_NAME).azurecr.io/pattern-nester-backend:$(IMAGE_TAG) \
+                  --target-port 8080 \
+                  --ingress external \
+                  --registry-server $(ACR_NAME).azurecr.io \
+                  --registry-username $(ACR_USERNAME) \
+                  --registry-password $(ACR_PASSWORD) \
+                  --min-replicas 1 \
+                  --secrets connection-string="$(CONNECTION_STRING)" \
+                  --env-vars connection-string=secretref:connection-string || \
+                az containerapp secret set \
+                  --name backend \
+                  --resource-group $(RESOURCE_GROUP) \
+                  --secrets connection-string="$(CONNECTION_STRING)"
+                az containerapp update \
+                  --name backend \
+                  --resource-group $(RESOURCE_GROUP) \
+                  --image $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)
+
+                BACKEND_URL=$(az containerapp show \
+                  --name backend \
+                  --resource-group $(RESOURCE_GROUP) \
+                  --query properties.configuration.ingress.fqdn \
+                  -o tsv)
+
+                az containerapp create \
+                  --name pattern-nester-frontend \
+                  --resource-group $(RESOURCE_GROUP) \
+                  --environment $(CONTAINERAPPS_ENV) \
+                  --image $(ACR_NAME).azurecr.io/frontend:$(IMAGE_TAG) \
+                  --target-port 80 \
+                  --ingress external \
+                  --min-replicas 1 \
+                  --registry-server $(ACR_NAME).azurecr.io \
+                  --registry-username $(ACR_USERNAME) \
+                  --registry-password $(ACR_PASSWORD) \
+                  --env-vars VITE_API_BASE_URL=https://$BACKEND_URL || \
+
+                az containerapp update \
+                  --name frontend \
+                  --resource-group $(RESOURCE_GROUP) \
+                  --set-env-vars VITE_API_BASE_URL=https://$BACKEND_URL
+            env:
+              ACR_USERNAME: $(ACR_USERNAME)
+              ACR_PASSWORD: $(ACR_PASSWORD)
+              CONNECTION_STRING: $(CONNECTION_STRING)

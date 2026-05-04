@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="DevelopmentDeployment.yaml" />
+    <File Path="docker-compose.yaml" />
+  </Folder>
+  <Project Path="Farbank.Pattern.Nester.SageSpecs.AppHost/Farbank.Pattern.Nester.SageSpecs.AppHost.csproj" />
+  <Project Path="Farbank.Pattern.Nester.SageSpecs.Server/Farbank.Pattern.Nester.SageSpecs.Server.csproj" />
+  <Project Path="frontend/frontend.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+</Solution>

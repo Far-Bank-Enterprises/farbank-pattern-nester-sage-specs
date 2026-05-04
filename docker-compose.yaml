@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  frontend:
+    image: ${ACR_NAME}.azurecr.io/pattern-nester-frontend:${IMAGE_TAG}
+    ports:
+      - "3000:80"
+  backend:
+    image: ${ACR_NAME}.azurecr.io/pattern-nester-backend:${IMAGE_TAG}
+    ports:
+      - "5000:80"
