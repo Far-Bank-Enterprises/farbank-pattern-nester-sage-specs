@@ -25,3 +25,9 @@ replay_pid*
 /Farbank.Pattern.Nester.SageSpecs.AppHost/obj/Debug
 /Farbank.Pattern.Nester.SageSpecs.Server/bin/Debug
 /Farbank.Pattern.Nester.SageSpecs.Server/obj/Debug
+/Farbank.Pattern.Nester.SageSpecs.AppHost/bin/Debug
+/.vs/Farbank.Pattern.Nester.SageSpecs/CopilotIndices
+/.vs/Farbank.Pattern.Nester.SageSpecs.slnx/v18
+/.vs
+*.v2
+/.vs
