@@ -1,4 +1,3 @@
-
 using Farbank.Pattern.Nester.SageSpecs.Server.Endpoints;
 using Farbank.Pattern.Nester.SageSpecs.Server.Services;
 using Farbank.Pattern.Nester.SageSpecs.Server.Services.D365;
@@ -6,6 +5,7 @@ using Farbank.Pattern.Nester.SageSpecs.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
+using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +47,14 @@ builder.Services.AddScoped<PatternNesterService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+var azureClientConfiguration = builder.Configuration.GetSection(nameof(D365OAuthConfiguration))
+        .Get<D365OAuthConfiguration>();
+
+builder.Services.AddRefitClient<ID365Api>()
+        .ConfigureHttpClient(c => c.BaseAddress = new Uri(azureClientConfiguration.BaseAddress_BlankScheduler))
+        .AddHttpMessageHandler<HttpLoggingHandler>()
+        .AddHttpMessageHandler<OAuth2AuthenticationHandler>();
 
 builder.Services.AddAuthorization();
 

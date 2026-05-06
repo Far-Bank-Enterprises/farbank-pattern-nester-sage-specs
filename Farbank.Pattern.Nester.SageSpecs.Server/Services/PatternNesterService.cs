@@ -19,5 +19,12 @@ namespace Farbank.Pattern.Nester.SageSpecs.Server.Services
 
             return exclusions;
         }
+
+        public async Task<List<(string, string)>> GetProductionOrdersByDateTime(DateTime dateTime)
+        {
+            // First get the data from D365, filtering as we have the date asked.
+            // Then filter to workorders with prod pool title
+            // Serve
+        }
     }
 }

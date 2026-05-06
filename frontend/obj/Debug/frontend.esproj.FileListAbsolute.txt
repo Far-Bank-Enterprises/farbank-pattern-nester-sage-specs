@@ -1,1 +1,2 @@
 C:\Users\eharvey-nilsson\source\repos\Farbank.Pattern.Nester.SageSpecs\frontend\obj\Debug\frontend.esproj.CoreCompileInputs.cache
+C:\GitHub\farbank-pattern-nester-sage-specs\frontend\obj\Debug\frontend.esproj.CoreCompileInputs.cache
