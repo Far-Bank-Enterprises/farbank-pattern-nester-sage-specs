@@ -13,12 +13,12 @@ namespace Farbank.Pattern.Nester.SageSpecs.Server.Services.D365
             _d365Api = d365Api;
         }
 
-        public async Task<List<FBEProductionOrderHeader>> GetProdOrdersByDateAsync(string pool, string lastShiftFull)
+        public async Task<List<FBEProductionOrderHeader>> GetProdOrdersByDateAsync(string pool, string date)
         {
             var result = new List<FBEProductionOrderHeader>();
             try
             {
-                var Odata = await _d365Api.GetProdOrdersByDateAsync(pool, lastShiftFull);
+                var Odata = await _d365Api.GetProdOrdersByDateAsync(pool, date);
                 if (Odata.value != null)
                 {
                     result = Odata.value.ToList();
@@ -28,6 +28,7 @@ namespace Farbank.Pattern.Nester.SageSpecs.Server.Services.D365
             {
                 //Log.Error(e, e.Message);
                 //email
+                throw;
             }
             return result;
         }

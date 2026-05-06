@@ -44,12 +44,15 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<ID365Service, D365Service>();
 builder.Services.AddDbContext<SpecsDbContext>(options => options.UseSqlServer(builder.Configuration.GetSection($"ConnectionStrings:BlankScheduler").Value, providerOptions => providerOptions.EnableRetryOnFailure(20)));
 builder.Services.AddScoped<PatternNesterService>();
+builder.Services.AddTransient<HttpLoggingHandler>();
+builder.Services.AddTransient<OAuth2AuthenticationHandler>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
 var azureClientConfiguration = builder.Configuration.GetSection(nameof(D365OAuthConfiguration))
         .Get<D365OAuthConfiguration>();
+builder.Services.Configure<D365OAuthConfiguration>(builder.Configuration.GetSection(nameof(D365OAuthConfiguration)));
 
 builder.Services.AddRefitClient<ID365Api>()
         .ConfigureHttpClient(c => c.BaseAddress = new Uri(azureClientConfiguration.BaseAddress_BlankScheduler))

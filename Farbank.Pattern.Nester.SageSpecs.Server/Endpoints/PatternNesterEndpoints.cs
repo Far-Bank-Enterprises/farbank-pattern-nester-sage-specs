@@ -9,17 +9,42 @@ public static class PatternNesterEndpoints
     {
         routes.MapPost("/ping", async () =>
         {
-            // TODO: Save to database or process as needed
-            // For now, just echo back the submission
             return Results.Ok(new { message = "Pattern Nester ping received" });
         })
         .WithName("PatternNesterPing");
 
+
         routes.MapGet("/exclusions", async ([FromServices] Services.PatternNesterService service) =>
         {
-            var exclusions = await service.GetExclusions();
-            return Results.Ok(exclusions);
+            try
+            {
+                var exclusions = await service.GetExclusions();
+                return Results.Ok(exclusions);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception as needed
+                return Results.Problem("An error occurred while retrieving exclusions.");
+            }
         })
         .WithName("GetExclusions");
+
+
+        routes.MapGet("/production-orders", async ([FromServices] Services.PatternNesterService service, [FromQuery][Required] DateTime dateTime) =>
+        {
+            try
+            {
+                var productionOrders = await service.GetProductionOrdersByDateTime(dateTime);
+
+                Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(productionOrders));
+                return Results.Json(productionOrders);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception as needed
+                return Results.Json(new { error = "An error occurred while retrieving production orders." }, statusCode: 500);
+            }
+        })
+        .WithName("GetProductionOrdersByDateTime");
     }
 }

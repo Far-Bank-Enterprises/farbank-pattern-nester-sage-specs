@@ -1,5 +1,7 @@
 using System;
+using Farbank.Pattern.Nester.SageSpecs.Server.Models;
 using Farbank.Pattern.Nester.SageSpecs.Models;
+using Farbank.Pattern.Nester.SageSpecs.Server.Services.D365;
 using Microsoft.EntityFrameworkCore;
 
 namespace Farbank.Pattern.Nester.SageSpecs.Server.Services
@@ -8,9 +10,11 @@ namespace Farbank.Pattern.Nester.SageSpecs.Server.Services
     public class PatternNesterService
     {
         private readonly SpecsDbContext _dbContext;
-        public PatternNesterService(SpecsDbContext dbContext)
+        private readonly ID365Service _d365Service;
+        public PatternNesterService(SpecsDbContext dbContext, ID365Service d365Service)
         {
             _dbContext = dbContext;
+            _d365Service = d365Service;
         }
 
         public async Task<List<string>> GetExclusions()
@@ -20,11 +24,23 @@ namespace Farbank.Pattern.Nester.SageSpecs.Server.Services
             return exclusions;
         }
 
-        public async Task<List<(string, string)>> GetProductionOrdersByDateTime(DateTime dateTime)
+        public async Task<List<FBEProductionOrderHeader>> GetProductionOrdersByDateTime(DateTime dateTime)
         {
-            // First get the data from D365, filtering as we have the date asked.
-            // Then filter to workorders with prod pool title
-            // Serve
+            try
+            {
+                var date = dateTime.ToString("yyyy-MM-ddT12:00:00Z");
+                var pool = "Blanks";
+                var prodOrders = await _d365Service.GetProdOrdersByDateAsync(pool, date);
+
+                return prodOrders;
+
+            }
+            catch (Exception ex)
+            {
+                // Log the exception as needed
+                Console.WriteLine($"An error occurred while retrieving production orders: {ex.Message}");
+                throw;
+            }
         }
     }
 }

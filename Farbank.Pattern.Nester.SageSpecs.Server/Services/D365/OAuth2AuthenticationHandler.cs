@@ -1,12 +1,6 @@
-﻿using BlankMPS.Models;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Farbank.Pattern.Nester.SageSpecs.Server.Services.D365
 {

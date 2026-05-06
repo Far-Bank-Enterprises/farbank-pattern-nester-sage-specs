@@ -1202,6 +1202,22 @@
           "buildTransitive/netstandard2.0/refit.targets": {}
         }
       },
+      "Refit.HttpClientFactory/8.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Refit": "8.0.0"
+        },
+        "compile": {
+          "lib/net8.0/Refit.HttpClientFactory.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Refit.HttpClientFactory.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "System.ClientModel/1.8.0": {
         "type": "package",
         "dependencies": {
@@ -2929,6 +2945,28 @@
         "refit_logo.png"
       ]
     },
+    "Refit.HttpClientFactory/8.0.0": {
+      "sha512": "dwtmrqHkhuwDmG9qE8+rNnv6YFo132G1Ma+GCXupZQsdQcMN4U1uYaxoJVanRIPdieQGkQRcdxjkFhwO1LuRoA==",
+      "type": "package",
+      "path": "refit.httpclientfactory/8.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE/LICENSE",
+        "README.md",
+        "lib/net462/Refit.HttpClientFactory.dll",
+        "lib/net462/Refit.HttpClientFactory.xml",
+        "lib/net6.0/Refit.HttpClientFactory.dll",
+        "lib/net6.0/Refit.HttpClientFactory.xml",
+        "lib/net8.0/Refit.HttpClientFactory.dll",
+        "lib/net8.0/Refit.HttpClientFactory.xml",
+        "lib/netstandard2.0/Refit.HttpClientFactory.dll",
+        "lib/netstandard2.0/Refit.HttpClientFactory.xml",
+        "refit.httpclientfactory.8.0.0.nupkg.sha512",
+        "refit.httpclientfactory.nuspec",
+        "refit_logo.png"
+      ]
+    },
     "System.ClientModel/1.8.0": {
       "sha512": "AqRzhn0v29GGGLj/Z6gKq4lGNtvPHT4nHdG5PDJh9IfVjv/nYUVmX11hwwws1vDFeIAzrvmn0dPu8IjLtu6fAw==",
       "type": "package",
@@ -3123,7 +3161,8 @@
       "OpenTelemetry.Instrumentation.AspNetCore >= 1.15.2",
       "OpenTelemetry.Instrumentation.Http >= 1.15.1",
       "OpenTelemetry.Instrumentation.Runtime >= 1.15.1",
-      "Refit >= 8.0.0"
+      "Refit >= 8.0.0",
+      "Refit.HttpClientFactory >= 8.0.0"
     ]
   },
   "packageFolders": {
@@ -3242,6 +3281,10 @@
             "version": "[1.15.1, )"
           },
           "Refit": {
+            "target": "Package",
+            "version": "[8.0.0, )"
+          },
+          "Refit.HttpClientFactory": {
             "target": "Package",
             "version": "[8.0.0, )"
           }

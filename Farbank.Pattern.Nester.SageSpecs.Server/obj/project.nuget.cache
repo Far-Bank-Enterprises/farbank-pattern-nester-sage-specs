@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "eTnZaei5Kv4=",
+  "dgSpecHash": "kQj3+iDSHFQ=",
   "success": true,
   "projectFilePath": "C:\\GitHub\\farbank-pattern-nester-sage-specs\\Farbank.Pattern.Nester.SageSpecs.Server\\Farbank.Pattern.Nester.SageSpecs.Server.csproj",
   "expectedPackageFiles": [
@@ -73,6 +73,7 @@
     "C:\\Users\\eharvey-nilsson\\.nuget\\packages\\polly.extensions\\8.4.2\\polly.extensions.8.4.2.nupkg.sha512",
     "C:\\Users\\eharvey-nilsson\\.nuget\\packages\\polly.ratelimiting\\8.4.2\\polly.ratelimiting.8.4.2.nupkg.sha512",
     "C:\\Users\\eharvey-nilsson\\.nuget\\packages\\refit\\8.0.0\\refit.8.0.0.nupkg.sha512",
+    "C:\\Users\\eharvey-nilsson\\.nuget\\packages\\refit.httpclientfactory\\8.0.0\\refit.httpclientfactory.8.0.0.nupkg.sha512",
     "C:\\Users\\eharvey-nilsson\\.nuget\\packages\\system.clientmodel\\1.8.0\\system.clientmodel.1.8.0.nupkg.sha512",
     "C:\\Users\\eharvey-nilsson\\.nuget\\packages\\system.configuration.configurationmanager\\9.0.4\\system.configuration.configurationmanager.9.0.4.nupkg.sha512",
     "C:\\Users\\eharvey-nilsson\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.15.0\\system.identitymodel.tokens.jwt.8.15.0.nupkg.sha512",
